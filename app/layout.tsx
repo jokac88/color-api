@@ -6,8 +6,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Color API Application",
-  description: "Welcome to the Color API Application",
+  title: "Colors API Application",
+  description: "Welcome to the Colors API Application",
 };
 
 export default function RootLayout({
@@ -16,8 +16,8 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className="h-full lg:h-auto">
+      <body className={`h-full ${inter.className}`}>{children}</body>
     </html>
   );
 }

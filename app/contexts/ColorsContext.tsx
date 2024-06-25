@@ -1,29 +1,35 @@
 "use client";
 import {ColorProps} from "@/types/colorTypes";
 import {createContext, ReactNode, useState} from "react";
-import Color from "@/app/models/color";
 
 type ColorsContextObj = {
   colors: ColorProps[];
   selectedColor: ColorProps | null,
   filteredColors: ColorProps[];
+  filterName: string;
+  isLoading: boolean;
   setSelectedColor: (color: ColorProps | null) => void;
-  addColor: (name: string, hex: string) => void;
+  addColor: (name: string, hex: string, rgb: string) => void;
   removeColor: (name: string) => void;
-  filterColors: (filterName: string) => void;
+  filteringColors: (filterName: string) => void;
+  setLoading: (value: boolean) => void;
 };
 
 export const ColorsContext = createContext<ColorsContextObj>({
   colors: [],
   selectedColor: null,
   filteredColors: [],
+  filterName: "",
+  isLoading: false,
   setSelectedColor: () => {
   },
   addColor: () => {
   },
   removeColor: () => {
   },
-  filterColors: () => {
+  filteringColors: () => {
+  },
+  setLoading: () => {
   }
 });
 
@@ -33,13 +39,20 @@ export const ColorsContextProvider = ({children, initialColors}: {
 }) => {
   const [colors, setColors] = useState<ColorProps[]>(initialColors || []);
   const [selectedColor, setSelectedColor] = useState<ColorProps | null>(null);
-  const [filterName, setFilterName] = useState<string>('');
+  const [filterName, setFilterName] = useState<string>("");
   const [filteredColors, setFilteredColors] = useState<ColorProps[]>(colors || []);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const setSelectedColorHandler = (color: ColorProps | null) => setSelectedColor(color);
 
-  const addColorHandler = (name: string, hex: string) => {
-    setColors((prevState) => [{name, hex, group: 'custom'}, ...prevState]);
+  const addColorHandler = (name: string, hex: string, rgb: string) => {
+    const newColors = [{name, hex, group: "Custom", rgb}, ...colors];
+    setColors(newColors)
+
+    if (filterName) {
+      const filteredColors = newColors.filter(({group}) => group === filterName);
+      setFilteredColors(filteredColors);
+    }
   };
 
   const removeColorHandler = (colorName: string) => {
@@ -52,7 +65,7 @@ export const ColorsContextProvider = ({children, initialColors}: {
     }
   };
 
-  const filterColorsHandler = (filterNameProps: string) => {
+  const filteringColorsHandler = (filterNameProps: string) => {
     setFilterName(filterNameProps);
 
     if (filterNameProps) {
@@ -63,14 +76,19 @@ export const ColorsContextProvider = ({children, initialColors}: {
     }
   };
 
+  const setLoadingHandler = (value: boolean) => setIsLoading(value);
+
   const contextValue: ColorsContextObj = {
     colors,
     selectedColor,
     filteredColors,
+    filterName,
+    isLoading,
     setSelectedColor: setSelectedColorHandler,
     addColor: addColorHandler,
     removeColor: removeColorHandler,
-    filterColors: filterColorsHandler
+    filteringColors: filteringColorsHandler,
+    setLoading: setLoadingHandler
   };
 
   return (

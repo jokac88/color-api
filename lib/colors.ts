@@ -1,19 +1,31 @@
+import {toast} from "react-toastify";
+
 export const getColors = async () => {
-  const res = await fetch("https://www.csscolorsapi.com/api/colors");
+  try {
+    const res = await fetch("https://www.csscolorsapi.com/api/colors");
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
+    if (!res.ok) {
+      toast.error("Failed to fetch colors.");
+      throw new Error("Failed to fetch colors.");
+    }
+
+    return res.json();
+  } catch (error) {
+    console.error(error);
   }
-
-  return res.json();
 };
 
 export const getColor = async (colorName: string) => {
-  const res = await fetch(`https://www.csscolorsapi.com/api/colors/${colorName}`);
+  try {
+    const res = await fetch(`https://www.csscolorsapi.com/api/colors/${colorName}`);
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
+    if (!res.ok) {
+      toast.error("Failed to fetch color.");
+      throw new Error("Failed to fetch color.");
+    }
+
+    return res.json();
+  } catch (error) {
+    console.error(error);
   }
-
-  return res.json();
 };
